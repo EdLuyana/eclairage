@@ -37,6 +37,9 @@ class Product
     #[ORM\ManyToMany(targetEntity: Emplacement::class, inversedBy: 'products')]
     private Collection $place;
 
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?Brand $brand = null;
+
     public function __construct()
     {
         $this->place = new ArrayCollection();
@@ -127,6 +130,18 @@ class Product
     public function removePlace(Emplacement $place): static
     {
         $this->place->removeElement($place);
+
+        return $this;
+    }
+
+    public function getBrand(): ?Brand
+    {
+        return $this->brand;
+    }
+
+    public function setBrand(?Brand $brand): static
+    {
+        $this->brand = $brand;
 
         return $this;
     }
