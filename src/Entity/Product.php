@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
@@ -24,6 +26,21 @@ class Product
 
     #[ORM\Column(length: 255)]
     private ?string $reference = null;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Category $category = null;
+
+    /**
+     * @var Collection<int, Emplacement>
+     */
+    #[ORM\ManyToMany(targetEntity: Emplacement::class, inversedBy: 'products')]
+    private Collection $place;
+
+    public function __construct()
+    {
+        $this->place = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -74,6 +91,42 @@ class Product
     public function setReference(string $reference): static
     {
         $this->reference = $reference;
+
+        return $this;
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Emplacement>
+     */
+    public function getPlace(): Collection
+    {
+        return $this->place;
+    }
+
+    public function addPlace(Emplacement $place): static
+    {
+        if (!$this->place->contains($place)) {
+            $this->place->add($place);
+        }
+
+        return $this;
+    }
+
+    public function removePlace(Emplacement $place): static
+    {
+        $this->place->removeElement($place);
 
         return $this;
     }
