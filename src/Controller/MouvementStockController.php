@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/mouvement/stock')]
+#[Route('/mouvement_stock')]
 final class MouvementStockController extends AbstractController
 {
     #[Route(name: 'app_mouvement_stock_index', methods: ['GET'])]
