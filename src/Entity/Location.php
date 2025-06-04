@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\EmplacementRepository;
+use App\Repository\LocationRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: EmplacementRepository::class)]
-class Emplacement
+#[ORM\Entity(repositoryClass: LocationRepository::class)]
+class Location
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]

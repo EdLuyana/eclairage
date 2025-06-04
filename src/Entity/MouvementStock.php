@@ -23,7 +23,7 @@ class MouvementStock
 
     #[ORM\ManyToOne(inversedBy: 'mouvementStocks')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Emplacement $emplacement = null;
+    private ?Location $location = null;
 
     #[ORM\ManyToOne(inversedBy: 'mouvementStocks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -58,14 +58,14 @@ class MouvementStock
         return $this;
     }
 
-    public function getEmplacement(): ?Emplacement
+    public function getLocatiob(): ?Location
     {
-        return $this->emplacement;
+        return $this->location;
     }
 
-    public function setEmplacement(?Emplacement $emplacement): static
+    public function setLocation(?Location $location): static
     {
-        $this->emplacement = $emplacement;
+        $this->location = $location;
 
         return $this;
     }

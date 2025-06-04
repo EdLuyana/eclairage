@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Brand;
 use App\Entity\Category;
-use App\Entity\Emplacement;
+use App\Entity\Location;
 use App\Entity\Product;
 use App\Entity\Stock;
 use App\Entity\User;
@@ -36,12 +36,12 @@ $brand2 = new Brand();
 $brand2->setNom('Osram');
 $manager->persist($brand2);
 
-// Emplacements
-$mag1 = new Emplacement();
+// Location
+$mag1 = new Location();
 $mag1->setNom('Magasin Paris');
 $manager->persist($mag1);
 
-$mag2 = new Emplacement();
+$mag2 = new Location();
 $mag2->setNom('Magasin Lyon');
 $manager->persist($mag2);
 
@@ -80,16 +80,16 @@ $manager->persist($vendeuse);
 // Stock initial
 $stock1 = new Stock();
 $stock1->setProduct($prod1);
-$stock1->setEmplacement($mag1);
+$stock1->setLocation($mag1);
 $stock1->setQuantity(20);
-$stock1->setUpdatedAt(new \DateTime());
+$stock1->setUpdatedAt(new \DateTimeImmutable());
 $manager->persist($stock1);
 
 $stock2 = new Stock();
 $stock2->setProduct($prod2);
-$stock2->setEmplacement($mag2);
+$stock2->setLocation($mag2);
 $stock2->setQuantity(10);
-$stock2->setUpdatedAt(new \DateTime());
+$stock2->setUpdatedAt(new \DateTimeImmutable());
 $manager->persist($stock2);
 
 $manager->flush();

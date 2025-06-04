@@ -24,15 +24,15 @@ class MouvementStockForm extends AbstractType
             ->add('commentaire')
             ->add('product', EntityType::class, [
                 'class' => Product::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             ->add('emplacement', EntityType::class, [
                 'class' => Emplacement::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => 'username',
             ])
         ;
     }

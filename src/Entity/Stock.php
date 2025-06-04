@@ -19,13 +19,13 @@ class Stock
 
     #[ORM\ManyToOne(inversedBy: 'stocks')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Emplacement $emplacement = null;
+    private ?Location $location = null;
 
     #[ORM\Column]
     private ?int $quantity = null;
 
     #[ORM\Column]
-    private ?\DateTime $updatedAt = null;
+    private ?\DateTimeImmutable $updatedAt = null;
 
     public function getId(): ?int
     {
@@ -44,14 +44,14 @@ class Stock
         return $this;
     }
 
-    public function getEmplacement(): ?Emplacement
+    public function getLocation(): ?Location
     {
-        return $this->emplacement;
+        return $this->location;
     }
 
-    public function setEmplacement(?Emplacement $emplacement): static
+    public function setLocation(?Location $location): static
     {
-        $this->emplacement = $emplacement;
+        $this->location = $location;
 
         return $this;
     }
@@ -68,12 +68,12 @@ class Stock
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
     }
 
-    public function setUpdatedAt(\DateTime $updatedAt): static
+    public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
 

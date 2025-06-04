@@ -32,9 +32,9 @@ class Product
     private ?Category $category = null;
 
     /**
-     * @var Collection<int, Emplacement>
+     * @var Collection<int, Location>
      */
-    #[ORM\ManyToMany(targetEntity: Emplacement::class, inversedBy: 'products')]
+    #[ORM\ManyToMany(targetEntity: Location::class, inversedBy: 'products')]
     private Collection $place;
 
     #[ORM\ManyToOne(inversedBy: 'products')]

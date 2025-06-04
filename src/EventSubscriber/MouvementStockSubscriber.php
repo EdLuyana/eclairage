@@ -35,6 +35,10 @@ $stock->setQuantity(0);
 
 // Mise à jour de la quantité
 $newQuantity = $stock->getQuantity() + $mouvement->getQuantity();
+
+if ($newQuantity < 0){
+    throw new \LogicException('Stock insuffisant pour effectuer ce mouvement. Opération annulée.');
+}
 $stock->setQuantity($newQuantity);
 $stock->setUpdatedAt(new \DateTimeImmutable());
 

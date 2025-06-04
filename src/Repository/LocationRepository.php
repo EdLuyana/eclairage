@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Emplacement;
+use App\Entity\Location;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Emplacement>
+ * @extends ServiceEntityRepository<Location>
  */
-class EmplacementRepository extends ServiceEntityRepository
+class LocationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Emplacement::class);
+        parent::__construct($registry, Location::class);
     }
 
     //    /**
-    //     * @return Emplacement[] Returns an array of Emplacement objects
+    //     * @return Location[] Returns an array of Location objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class EmplacementRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Emplacement
+    //    public function findOneBySomeField($value): ?Location
     //    {
     //        return $this->createQueryBuilder('e')
     //            ->andWhere('e.exampleField = :val')
