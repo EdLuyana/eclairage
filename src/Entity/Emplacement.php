@@ -24,9 +24,16 @@ class Emplacement
     #[ORM\ManyToMany(targetEntity: Product::class, mappedBy: 'place')]
     private Collection $products;
 
+    /**
+     * @var Collection<int, Stock>
+     */
+    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'emplacement')]
+    private Collection $stocks;
+
     public function __construct()
     {
         $this->products = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -68,6 +75,36 @@ class Emplacement
     {
         if ($this->products->removeElement($product)) {
             $product->removePlace($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Stock>
+     */
+    public function getStocks(): Collection
+    {
+        return $this->stocks;
+    }
+
+    public function addStock(Stock $stock): static
+    {
+        if (!$this->stocks->contains($stock)) {
+            $this->stocks->add($stock);
+            $stock->setEmplacement($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStock(Stock $stock): static
+    {
+        if ($this->stocks->removeElement($stock)) {
+            // set the owning side to null (unless already changed)
+            if ($stock->getEmplacement() === $this) {
+                $stock->setEmplacement(null);
+            }
         }
 
         return $this;
