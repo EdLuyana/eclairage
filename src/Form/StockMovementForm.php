@@ -2,8 +2,8 @@
 
 namespace App\Form;
 
-use App\Entity\Emplacement;
-use App\Entity\MouvementStock;
+use App\Entity\Location;
+use App\Entity\StockMovement;
 use App\Entity\Product;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -11,7 +11,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class MouvementStockForm extends AbstractType
+class StockMovementForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -24,11 +24,11 @@ class MouvementStockForm extends AbstractType
             ->add('commentaire')
             ->add('product', EntityType::class, [
                 'class' => Product::class,
-                'choice_label' => 'nom',
+                'choice_label' => 'name',
             ])
-            ->add('emplacement', EntityType::class, [
-                'class' => Emplacement::class,
-                'choice_label' => 'nom',
+            ->add('location', EntityType::class, [
+                'class' => Location::class,
+                'choice_label' => 'name',
             ])
             ->add('user', EntityType::class, [
                 'class' => User::class,
@@ -40,7 +40,7 @@ class MouvementStockForm extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => MouvementStock::class,
+            'data_class' => StockMovement::class,
         ]);
     }
 }

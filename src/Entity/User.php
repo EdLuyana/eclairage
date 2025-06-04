@@ -34,14 +34,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     /**
-     * @var Collection<int, MouvementStock>
+     * @var Collection<int, StockMovement>
      */
-    #[ORM\OneToMany(targetEntity: MouvementStock::class, mappedBy: 'user')]
-    private Collection $mouvementStocks;
+    #[ORM\OneToMany(targetEntity: StockMovement::class, mappedBy: 'user')]
+    private Collection $stockMovements;
 
     public function __construct()
     {
-        $this->mouvementStocks = new ArrayCollection();
+        $this->stockMovements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -118,29 +118,29 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @return Collection<int, MouvementStock>
+     * @return Collection<int, StockMovement>
      */
-    public function getMouvementStocks(): Collection
+    public function getStockMovements(): Collection
     {
-        return $this->mouvementStocks;
+        return $this->stockMovements;
     }
 
-    public function addMouvementStock(MouvementStock $mouvementStock): static
+    public function addStockMovement(StockMovement $stockMovement): static
     {
-        if (!$this->mouvementStocks->contains($mouvementStock)) {
-            $this->mouvementStocks->add($mouvementStock);
-            $mouvementStock->setUser($this);
+        if (!$this->stockMovements->contains($stockMovement)) {
+            $this->stockMovements->add($stockMovement);
+            $stockMovement->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeMouvementStock(MouvementStock $mouvementStock): static
+    public function removeStockMovement(StockMovement $stockMovement): static
     {
-        if ($this->mouvementStocks->removeElement($mouvementStock)) {
+        if ($this->stockMovements->removeElement($stockMovement)) {
             // set the owning side to null (unless already changed)
-            if ($mouvementStock->getUser() === $this) {
-                $mouvementStock->setUser(null);
+            if ($stockMovement->getUser() === $this) {
+                $stockMovement->setUser(null);
             }
         }
 

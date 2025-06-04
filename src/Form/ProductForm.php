@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Brand;
 use App\Entity\Category;
-use App\Entity\Emplacement;
+use App\Entity\Locationcement;
 use App\Entity\Product;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +16,7 @@ class ProductForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('nom')
+            ->add('name')
             ->add('color')
             ->add('price')
             ->add('reference')
@@ -25,7 +25,7 @@ class ProductForm extends AbstractType
                 'choice_label' => 'id',
             ])
             ->add('place', EntityType::class, [
-                'class' => Emplacement::class,
+                'class' => Locationcement::class,
                 'choice_label' => 'id',
                 'multiple' => true,
             ])

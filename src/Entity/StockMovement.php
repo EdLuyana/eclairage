@@ -2,30 +2,30 @@
 
 namespace App\Entity;
 
-use App\Repository\MouvementStockRepository;
+use App\Repository\StockMovementRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Event\PrePersistEventArgs;
 use DateTimeImmutable;
 
-#[ORM\Entity(repositoryClass: MouvementStockRepository::class)]
+#[ORM\Entity(repositoryClass: StockMovementRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-class MouvementStock
+class StockMovement
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mouvementStocks')]
+    #[ORM\ManyToOne(inversedBy: 'stockMovements')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Product $product = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mouvementStocks')]
+    #[ORM\ManyToOne(inversedBy: 'stockMovements')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Location $location = null;
 
-    #[ORM\ManyToOne(inversedBy: 'mouvementStocks')]
+    #[ORM\ManyToOne(inversedBy: 'stockMovements')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
@@ -39,7 +39,7 @@ class MouvementStock
     private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $commentaire = null;
+    private ?string $comment = null;
 
     public function getId(): ?int
     {
@@ -118,14 +118,14 @@ class MouvementStock
         return $this;
     }
 
-    public function getCommentaire(): ?string
+    public function getComment(): ?string
     {
-        return $this->commentaire;
+        return $this->comment;
     }
 
-    public function setCommentaire(?string $commentaire): static
+    public function setComment(?string $comment): static
     {
-        $this->commentaire = $commentaire;
+        $this->comment = $comment;
 
         return $this;
     }

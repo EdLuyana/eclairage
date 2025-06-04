@@ -16,7 +16,7 @@ class Location
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, Product>
@@ -27,20 +27,20 @@ class Location
     /**
      * @var Collection<int, Stock>
      */
-    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'emplacement')]
+    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'location')]
     private Collection $stocks;
 
     /**
-     * @var Collection<int, MouvementStock>
+     * @var Collection<int, StockMovement>
      */
-    #[ORM\OneToMany(targetEntity: MouvementStock::class, mappedBy: 'emplacement')]
-    private Collection $mouvementStocks;
+    #[ORM\OneToMany(targetEntity: StockMovement::class, mappedBy: 'location')]
+    private Collection $stockMovements;
 
     public function __construct()
     {
         $this->products = new ArrayCollection();
         $this->stocks = new ArrayCollection();
-        $this->mouvementStocks = new ArrayCollection();
+        $this->stockMovements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -48,14 +48,14 @@ class Location
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getName(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setName(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -99,7 +99,7 @@ class Location
     {
         if (!$this->stocks->contains($stock)) {
             $this->stocks->add($stock);
-            $stock->setEmplacement($this);
+            $stock->setLocation($this);
         }
 
         return $this;
@@ -109,8 +109,8 @@ class Location
     {
         if ($this->stocks->removeElement($stock)) {
             // set the owning side to null (unless already changed)
-            if ($stock->getEmplacement() === $this) {
-                $stock->setEmplacement(null);
+            if ($stock->getLocation() === $this) {
+                $stock->setLocation(null);
             }
         }
 
@@ -118,29 +118,29 @@ class Location
     }
 
     /**
-     * @return Collection<int, MouvementStock>
+     * @return Collection<int, StockMovement>
      */
-    public function getMouvementStocks(): Collection
+    public function getStockMovements(): Collection
     {
-        return $this->mouvementStocks;
+        return $this->stockMovements;
     }
 
-    public function addMouvementStock(MouvementStock $mouvementStock): static
+    public function addStockMovement(StockMovement $stockMovement): static
     {
-        if (!$this->mouvementStocks->contains($mouvementStock)) {
-            $this->mouvementStocks->add($mouvementStock);
-            $mouvementStock->setEmplacement($this);
+        if (!$this->stockMovements->contains($stockMovement)) {
+            $this->stockMovements->add($stockMovement);
+            $stockMovement->setLocation($this);
         }
 
         return $this;
     }
 
-    public function removeMouvementStock(MouvementStock $mouvementStock): static
+    public function removeStockMovement(StockMovement $stockMovement): static
     {
-        if ($this->mouvementStocks->removeElement($mouvementStock)) {
+        if ($this->stockMovements->removeElement($stockMovement)) {
             // set the owning side to null (unless already changed)
-            if ($mouvementStock->getEmplacement() === $this) {
-                $mouvementStock->setEmplacement(null);
+            if ($stockMovement->getLocation() === $this) {
+                $php_errormsg->setLocation(null);
             }
         }
 

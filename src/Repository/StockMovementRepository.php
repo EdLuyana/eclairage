@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\MouvementStock;
+use App\Entity\StockMovement;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<MouvementStock>
+ * @extends ServiceEntityRepository<StockMovement>
  */
-class MouvementStockRepository extends ServiceEntityRepository
+class StockMovementRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, MouvementStock::class);
+        parent::__construct($registry, StockMovement::class);
     }
 
     //    /**
-    //     * @return MouvementStock[] Returns an array of MouvementStock objects
+    //     * @return StockMovement[] Returns an array of StockMovement objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class MouvementStockRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?MouvementStock
+    //    public function findOneBySomeField($value): ?StockMovement
     //    {
     //        return $this->createQueryBuilder('m')
     //            ->andWhere('m.exampleField = :val')

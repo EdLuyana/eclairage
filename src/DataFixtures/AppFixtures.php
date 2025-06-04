@@ -20,34 +20,34 @@ public function load(ObjectManager $manager): void
 {
 // Catégories
 $cat1 = new Category();
-$cat1->setNom('Ampoules');
+$cat1->setName('Ampoules');
 $manager->persist($cat1);
 
 $cat2 = new Category();
-$cat2->setNom('Lampes');
+$cat2->setName('Lampes');
 $manager->persist($cat2);
 
 // Marques
 $brand1 = new Brand();
-$brand1->setNom('Philips');
+$brand1->setName('Philips');
 $manager->persist($brand1);
 
 $brand2 = new Brand();
-$brand2->setNom('Osram');
+$brand2->setName('Osram');
 $manager->persist($brand2);
 
 // Location
 $mag1 = new Location();
-$mag1->setNom('Magasin Paris');
+$mag1->setName('Magasin Paris');
 $manager->persist($mag1);
 
 $mag2 = new Location();
-$mag2->setNom('Magasin Lyon');
+$mag2->setName('Magasin Lyon');
 $manager->persist($mag2);
 
 // Produits
 $prod1 = new Product();
-$prod1->setNom('Ampoule LED 60W');
+$prod1->setName('Ampoule LED 60W');
 $prod1->setBrand($brand1);
 $prod1->setCategory($cat1);
 $prod1->setColor('Blanc');
@@ -56,7 +56,7 @@ $prod1->setReference('prod1');
 $manager->persist($prod1);
 
 $prod2 = new Product();
-$prod2->setNom('Lampe de bureau');
+$prod2->setName('Lampe de bureau');
 $prod2->setBrand($brand2);
 $prod2->setCategory($cat2);
 $prod2->setColor('Noir');

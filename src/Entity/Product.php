@@ -16,7 +16,7 @@ class Product
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nom = null;
+    private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     private ?string $color = null;
@@ -47,16 +47,16 @@ class Product
     private Collection $stocks;
 
     /**
-     * @var Collection<int, MouvementStock>
+     * @var Collection<int, StockMovement>
      */
-    #[ORM\OneToMany(targetEntity: MouvementStock::class, mappedBy: 'product')]
-    private Collection $mouvementStocks;
+    #[ORM\OneToMany(targetEntity: StockMovement::class, mappedBy: 'product')]
+    private Collection $stockMovements;
 
     public function __construct()
     {
         $this->place = new ArrayCollection();
         $this->stocks = new ArrayCollection();
-        $this->mouvementStocks = new ArrayCollection();
+        $this->stockMovements = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -64,14 +64,14 @@ class Product
         return $this->id;
     }
 
-    public function getNom(): ?string
+    public function getname(): ?string
     {
-        return $this->nom;
+        return $this->name;
     }
 
-    public function setNom(string $nom): static
+    public function setname(string $name): static
     {
-        $this->nom = $nom;
+        $this->name = $name;
 
         return $this;
     }
@@ -125,14 +125,14 @@ class Product
     }
 
     /**
-     * @return Collection<int, Emplacement>
+     * @return Collection<int, Locationcement>
      */
     public function getPlace(): Collection
     {
         return $this->place;
     }
 
-    public function addPlace(Emplacement $place): static
+    public function addPlace(Locationcement $place): static
     {
         if (!$this->place->contains($place)) {
             $this->place->add($place);
@@ -141,7 +141,7 @@ class Product
         return $this;
     }
 
-    public function removePlace(Emplacement $place): static
+    public function removePlace(Locationcement $place): static
     {
         $this->place->removeElement($place);
 
@@ -191,29 +191,29 @@ class Product
     }
 
     /**
-     * @return Collection<int, MouvementStock>
+     * @return Collection<int, StockMovement>
      */
-    public function getMouvementStocks(): Collection
+    public function getstockMovements(): Collection
     {
-        return $this->mouvementStocks;
+        return $this->stockMovements;
     }
 
-    public function addMouvementStock(MouvementStock $mouvementStock): static
+    public function addStockMovements(StockMovement $stockMovement): static
     {
-        if (!$this->mouvementStocks->contains($mouvementStock)) {
-            $this->mouvementStocks->add($mouvementStock);
-            $mouvementStock->setProduct($this);
+        if (!$this->stockMovements->contains($stockMovement)) {
+            $this->stockMovements->add($stockMovement);
+            $stockMovement->setProduct($this);
         }
 
         return $this;
     }
 
-    public function removeMouvementStock(MouvementStock $mouvementStock): static
+    public function removeStockMovement(StockMovement $stockMovement): static
     {
-        if ($this->mouvementStocks->removeElement($mouvementStock)) {
+        if ($this->stockMovements->removeElement($stockMovement)) {
             // set the owning side to null (unless already changed)
-            if ($mouvementStock->getProduct() === $this) {
-                $mouvementStock->setProduct(null);
+            if ($stockMovement->getProduct() === $this) {
+                $stockMovement->setProduct(null);
             }
         }
 

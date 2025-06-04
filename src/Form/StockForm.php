@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Emplacement;
+use App\Entity\Location;
 use App\Entity\Product;
 use App\Entity\Stock;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -21,8 +21,8 @@ class StockForm extends AbstractType
                 'class' => Product::class,
                 'choice_label' => 'id',
             ])
-            ->add('emplacement', EntityType::class, [
-                'class' => Emplacement::class,
+            ->add('location', EntityType::class, [
+                'class' => Location::class,
                 'choice_label' => 'id',
             ])
         ;
