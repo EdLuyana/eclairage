@@ -5,8 +5,11 @@ namespace App\Entity;
 use App\Repository\MouvementStockRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Event\PrePersistEventArgs;
+use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: MouvementStockRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class MouvementStock
 {
     #[ORM\Id]
@@ -33,7 +36,7 @@ class MouvementStock
     private ?string $type = null;
 
     #[ORM\Column]
-    private ?\DateTime $createdAt = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $commentaire = null;
@@ -103,12 +106,12 @@ class MouvementStock
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTime
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTime $createdAt): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
 
@@ -125,5 +128,12 @@ class MouvementStock
         $this->commentaire = $commentaire;
 
         return $this;
+    }
+    #[ORM\PrePersist]
+    public function setCreatedAtValue(): void
+    {
+        if ($this->createdAt === null) {
+            $this->createdAt = new DateTimeImmutable();
+        }
     }
 }
