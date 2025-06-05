@@ -95,12 +95,6 @@ class Location
         return $this->stocks;
     }
 
-    public function __toString(): string
-    {
-        return $this->name ?? '';
-    }
-
-
     public function addStock(Stock $stock): static
     {
         if (!$this->stocks->contains($stock)) {
@@ -151,5 +145,10 @@ class Location
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 }
