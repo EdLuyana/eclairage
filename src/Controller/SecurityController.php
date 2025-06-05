@@ -12,16 +12,16 @@ class SecurityController extends AbstractController
     #[Route('/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($this->getUser()) {
-            $roles = $this->getUser()->getRoles();
+        if ($user = $this->getUser()) {
+            $roles = $user->getRoles();
 
-            if (in_array('ROLE_ADMIN', $roles)) {
-                return $this->redirectToRoute('admin_product_index');
-            } elseif (in_array('ROLE_USER', $roles)) {
-                return $this->redirectToRoute('user_dashboard'); // À créer plus tard
+            if (in_array('ROLE_ADMIN', $roles, true)) {
+                return $this->redirectToRoute('admin_dashboard');
+            } elseif (in_array('ROLE_USER', $roles, true)) {
+                return $this->redirectToRoute('user_dashboard');
             }
 
-            // fallback
+            // par défaut, si aucun rôle ne correspond
             return $this->redirectToRoute('app_login');
         }
 
@@ -33,6 +33,7 @@ class SecurityController extends AbstractController
             'error' => $error,
         ]);
     }
+
 
     #[Route('/logout', name: 'app_logout')]
     public function logout(): void
