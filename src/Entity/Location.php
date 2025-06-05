@@ -72,7 +72,7 @@ class Location
     {
         if (!$this->products->contains($product)) {
             $this->products->add($product);
-            $product->addPlace($this);
+            $product->addLocation($this);
         }
 
         return $this;
@@ -81,7 +81,7 @@ class Location
     public function removeProduct(Product $product): static
     {
         if ($this->products->removeElement($product)) {
-            $product->removePlace($this);
+            $product->removeLocation($this);
         }
 
         return $this;
@@ -94,6 +94,12 @@ class Location
     {
         return $this->stocks;
     }
+
+    public function __toString(): string
+    {
+        return $this->name ?? '';
+    }
+
 
     public function addStock(Stock $stock): static
     {

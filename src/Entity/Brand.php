@@ -54,6 +54,12 @@ class Brand
         return $this->products;
     }
 
+    public function __toString(): string
+    {
+        return $this->name ?? '';
+    }
+
+
     public function addProduct(Product $product): static
     {
         if (!$this->products->contains($product)) {

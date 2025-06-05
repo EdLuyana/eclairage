@@ -35,7 +35,7 @@ class Product
      * @var Collection<int, Location>
      */
     #[ORM\ManyToMany(targetEntity: Location::class, inversedBy: 'products')]
-    private Collection $place;
+    private Collection $locations;
 
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?Brand $brand = null;
@@ -52,9 +52,15 @@ class Product
     #[ORM\OneToMany(targetEntity: StockMovement::class, mappedBy: 'product')]
     private Collection $stockMovements;
 
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $updatedAt = null;
+
     public function __construct()
     {
-        $this->place = new ArrayCollection();
+        $this->locations = new ArrayCollection();
         $this->stocks = new ArrayCollection();
         $this->stockMovements = new ArrayCollection();
     }
@@ -64,15 +70,14 @@ class Product
         return $this->id;
     }
 
-    public function getname(): ?string
+    public function getName(): ?string
     {
         return $this->name;
     }
 
-    public function setname(string $name): static
+    public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -84,7 +89,6 @@ class Product
     public function setColor(string $color): static
     {
         $this->color = $color;
-
         return $this;
     }
 
@@ -96,7 +100,6 @@ class Product
     public function setPrice(int $price): static
     {
         $this->price = $price;
-
         return $this;
     }
 
@@ -108,7 +111,6 @@ class Product
     public function setReference(string $reference): static
     {
         $this->reference = $reference;
-
         return $this;
     }
 
@@ -120,31 +122,28 @@ class Product
     public function setCategory(?Category $category): static
     {
         $this->category = $category;
-
         return $this;
     }
 
     /**
-     * @return Collection<int, Locationcement>
+     * @return Collection<int, Location>
      */
-    public function getPlace(): Collection
+    public function getLocations(): Collection
     {
-        return $this->place;
+        return $this->locations;
     }
 
-    public function addPlace(Locationcement $place): static
+    public function addLocation(Location $location): static
     {
-        if (!$this->place->contains($place)) {
-            $this->place->add($place);
+        if (!$this->locations->contains($location)) {
+            $this->locations->add($location);
         }
-
         return $this;
     }
 
-    public function removePlace(Locationcement $place): static
+    public function removeLocation(Location $location): static
     {
-        $this->place->removeElement($place);
-
+        $this->locations->removeElement($location);
         return $this;
     }
 
@@ -156,7 +155,6 @@ class Product
     public function setBrand(?Brand $brand): static
     {
         $this->brand = $brand;
-
         return $this;
     }
 
@@ -174,26 +172,23 @@ class Product
             $this->stocks->add($stock);
             $stock->setProduct($this);
         }
-
         return $this;
     }
 
     public function removeStock(Stock $stock): static
     {
         if ($this->stocks->removeElement($stock)) {
-            // set the owning side to null (unless already changed)
             if ($stock->getProduct() === $this) {
                 $stock->setProduct(null);
             }
         }
-
         return $this;
     }
 
     /**
      * @return Collection<int, StockMovement>
      */
-    public function getstockMovements(): Collection
+    public function getStockMovements(): Collection
     {
         return $this->stockMovements;
     }
@@ -204,19 +199,38 @@ class Product
             $this->stockMovements->add($stockMovement);
             $stockMovement->setProduct($this);
         }
-
         return $this;
     }
 
     public function removeStockMovement(StockMovement $stockMovement): static
     {
         if ($this->stockMovements->removeElement($stockMovement)) {
-            // set the owning side to null (unless already changed)
             if ($stockMovement->getProduct() === $this) {
                 $stockMovement->setProduct(null);
             }
         }
+        return $this;
+    }
 
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
+    {
+        $this->updatedAt = $updatedAt;
         return $this;
     }
 }

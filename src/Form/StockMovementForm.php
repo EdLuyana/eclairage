@@ -21,7 +21,7 @@ class StockMovementForm extends AbstractType
             ->add('createdAt', null, [
                 'widget' => 'single_text',
             ])
-            ->add('commentaire')
+            ->add('Comment')
             ->add('product', EntityType::class, [
                 'class' => Product::class,
                 'choice_label' => 'name',

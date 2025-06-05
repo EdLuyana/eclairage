@@ -5,7 +5,6 @@ namespace App\Entity;
 use App\Repository\StockMovementRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Doctrine\ORM\Event\PrePersistEventArgs;
 use DateTimeImmutable;
 
 #[ORM\Entity(repositoryClass: StockMovementRepository::class)]
@@ -58,7 +57,7 @@ class StockMovement
         return $this;
     }
 
-    public function getLocatiob(): ?Location
+    public function getLocation(): ?Location
     {
         return $this->location;
     }
