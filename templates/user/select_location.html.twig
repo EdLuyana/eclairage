@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sélection du magasin{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>Choisissez votre magasin</h1>
+
+        {{ form_start(form) }}
+        {{ form_row(form.location) }}
+        <button class="btn btn-primary mt-3">Valider</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

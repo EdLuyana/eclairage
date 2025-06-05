@@ -21,6 +21,7 @@ security:
                 check_path: app_login
                 username_parameter: username
                 password_parameter: password
+                success_handler: App\Security\LoginSuccessHandler
             logout:
                 path: app_logout
                 # where to redirect after logout
@@ -38,6 +39,7 @@ security:
         - { path: ^/login, roles: PUBLIC_ACCESS }
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/user, roles: ROLE_USER }
+        - { path: ^/user/select-location, roles: ROLE_USER }
 
 
 when@test:
