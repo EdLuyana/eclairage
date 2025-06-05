@@ -51,8 +51,9 @@ $prod1->setName('Ampoule LED 60W');
 $prod1->setBrand($brand1);
 $prod1->setCategory($cat1);
 $prod1->setColor('Blanc');
-$prod1->setPrice('29');
+$prod1->setPrice(29);
 $prod1->setReference('prod1');
+$prod1->setCreatedAt(new \DateTimeImmutable()); // ✅ Ajouté
 $manager->persist($prod1);
 
 $prod2 = new Product();
@@ -60,8 +61,9 @@ $prod2->setName('Lampe de bureau');
 $prod2->setBrand($brand2);
 $prod2->setCategory($cat2);
 $prod2->setColor('Noir');
-$prod2->setPrice('49');
+$prod2->setPrice(49);
 $prod2->setReference('prod2');
+$prod2->setCreatedAt(new \DateTimeImmutable()); // ✅ Ajouté
 $manager->persist($prod2);
 
 // Utilisateurs
@@ -91,6 +93,7 @@ $stock2->setLocation($mag2);
 $stock2->setQuantity(10);
 $stock2->setUpdatedAt(new \DateTimeImmutable());
 $manager->persist($stock2);
+
 
 $manager->flush();
 }
