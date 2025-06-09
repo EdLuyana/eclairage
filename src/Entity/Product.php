@@ -31,24 +31,12 @@ class Product
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category = null;
 
-    /**
-     * @var Collection<int, Location>
-     */
-    #[ORM\ManyToMany(targetEntity: Location::class, inversedBy: 'products')]
-    private Collection $locations;
-
     #[ORM\ManyToOne(inversedBy: 'products')]
     private ?Brand $brand = null;
 
-    /**
-     * @var Collection<int, Stock>
-     */
-    #[ORM\OneToMany(targetEntity: Stock::class, mappedBy: 'product')]
-    private Collection $stocks;
+    #[ORM\ManyToMany(targetEntity: Location::class, inversedBy: 'products')]
+    private Collection $locations;
 
-    /**
-     * @var Collection<int, StockMovement>
-     */
     #[ORM\OneToMany(targetEntity: StockMovement::class, mappedBy: 'product')]
     private Collection $stockMovements;
 
@@ -58,80 +46,48 @@ class Product
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductVariant::class, cascade: ['persist', 'remove'])]
+    private Collection $variants;
+
     public function __construct()
     {
         $this->locations = new ArrayCollection();
-        $this->stocks = new ArrayCollection();
         $this->stockMovements = new ArrayCollection();
+        $this->variants = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    // Getters/Setters
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-        return $this;
-    }
+    public function getName(): ?string { return $this->name; }
+    public function setName(string $name): static { $this->name = $name; return $this; }
 
-    public function getColor(): ?string
-    {
-        return $this->color;
-    }
+    public function getColor(): ?string { return $this->color; }
+    public function setColor(string $color): static { $this->color = $color; return $this; }
 
-    public function setColor(string $color): static
-    {
-        $this->color = $color;
-        return $this;
-    }
+    public function getPrice(): ?int { return $this->price; }
+    public function setPrice(int $price): static { $this->price = $price; return $this; }
 
-    public function getPrice(): ?int
-    {
-        return $this->price;
-    }
+    public function getReference(): ?string { return $this->reference; }
+    public function setReference(string $reference): static { $this->reference = $reference; return $this; }
 
-    public function setPrice(int $price): static
-    {
-        $this->price = $price;
-        return $this;
-    }
+    public function getCategory(): ?Category { return $this->category; }
+    public function setCategory(?Category $category): static { $this->category = $category; return $this; }
 
-    public function getReference(): ?string
-    {
-        return $this->reference;
-    }
+    public function getBrand(): ?Brand { return $this->brand; }
+    public function setBrand(?Brand $brand): static { $this->brand = $brand; return $this; }
 
-    public function setReference(string $reference): static
-    {
-        $this->reference = $reference;
-        return $this;
-    }
+    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static { $this->createdAt = $createdAt; return $this; }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): static
-    {
-        $this->category = $category;
-        return $this;
-    }
+    public function getUpdatedAt(): ?\DateTimeImmutable { return $this->updatedAt; }
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static { $this->updatedAt = $updatedAt; return $this; }
 
     /**
      * @return Collection<int, Location>
      */
-    public function getLocations(): Collection
-    {
-        return $this->locations;
-    }
+    public function getLocations(): Collection { return $this->locations; }
 
     public function addLocation(Location $location): static
     {
@@ -147,53 +103,12 @@ class Product
         return $this;
     }
 
-    public function getBrand(): ?Brand
-    {
-        return $this->brand;
-    }
-
-    public function setBrand(?Brand $brand): static
-    {
-        $this->brand = $brand;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Stock>
-     */
-    public function getStocks(): Collection
-    {
-        return $this->stocks;
-    }
-
-    public function addStock(Stock $stock): static
-    {
-        if (!$this->stocks->contains($stock)) {
-            $this->stocks->add($stock);
-            $stock->setProduct($this);
-        }
-        return $this;
-    }
-
-    public function removeStock(Stock $stock): static
-    {
-        if ($this->stocks->removeElement($stock)) {
-            if ($stock->getProduct() === $this) {
-                $stock->setProduct(null);
-            }
-        }
-        return $this;
-    }
-
     /**
      * @return Collection<int, StockMovement>
      */
-    public function getStockMovements(): Collection
-    {
-        return $this->stockMovements;
-    }
+    public function getStockMovements(): Collection { return $this->stockMovements; }
 
-    public function addStockMovements(StockMovement $stockMovement): static
+    public function addStockMovement(StockMovement $stockMovement): static
     {
         if (!$this->stockMovements->contains($stockMovement)) {
             $this->stockMovements->add($stockMovement);
@@ -212,25 +127,27 @@ class Product
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
+    /**
+     * @return Collection<int, ProductVariant>
+     */
+    public function getVariants(): Collection { return $this->variants; }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): static
+    public function addVariant(ProductVariant $variant): static
     {
-        $this->createdAt = $createdAt;
+        if (!$this->variants->contains($variant)) {
+            $this->variants->add($variant);
+            $variant->setProduct($this);
+        }
         return $this;
     }
 
-    public function getUpdatedAt(): ?\DateTimeImmutable
+    public function removeVariant(ProductVariant $variant): static
     {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): static
-    {
-        $this->updatedAt = $updatedAt;
+        if ($this->variants->removeElement($variant)) {
+            if ($variant->getProduct() === $this) {
+                $variant->setProduct(null);
+            }
+        }
         return $this;
     }
 }

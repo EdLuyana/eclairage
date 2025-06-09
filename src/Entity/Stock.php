@@ -6,6 +6,7 @@ use App\Repository\StockRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: StockRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Stock
 {
     #[ORM\Id]
@@ -15,7 +16,7 @@ class Stock
 
     #[ORM\ManyToOne(inversedBy: 'stocks')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Product $product = null;
+    private ?ProductVariant $variant = null;
 
     #[ORM\ManyToOne(inversedBy: 'stocks')]
     #[ORM\JoinColumn(nullable: false)]
@@ -27,19 +28,26 @@ class Stock
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\PrePersist]
+    #[ORM\PreUpdate]
+    public function updateTimestamp(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProduct(): ?Product
+    public function getVariant(): ?ProductVariant
     {
-        return $this->product;
+        return $this->variant;
     }
 
-    public function setProduct(?Product $product): static
+    public function setVariant(?ProductVariant $variant): self
     {
-        $this->product = $product;
+        $this->variant = $variant;
 
         return $this;
     }
