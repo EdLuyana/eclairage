@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Effectuer une vente{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2>Effectuer une vente – {{ location.name }}</h2>
+
+        <form method="POST">
+            <div class="mb-3">
+                <label for="reference" class="form-label">Référence produit</label>
+                <input type="text" id="reference" name="reference" class="form-control" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="size" class="form-label">Taille</label>
+                <select id="size" name="size" class="form-select" required>
+                    <option value="">Sélectionnez une taille</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Valider la vente</button>
+        </form>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger mt-3">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-3">{{ message }}</div>
+        {% endfor %}
+    </div>
+{% endblock %}

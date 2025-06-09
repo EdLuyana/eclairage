@@ -30,10 +30,8 @@ class ProductVariantRepository extends ServiceEntityRepository
             ->join('v.product', 'p')
             ->where('p.reference = :ref')
             ->andWhere('v.size = :size')
-            ->setParameters([
-                'ref' => $reference,
-                'size' => $size
-            ])
+            ->setParameter('ref', $reference)
+            ->setParameter('size', $size)
             ->getQuery()
             ->getOneOrNullResult();
     }
