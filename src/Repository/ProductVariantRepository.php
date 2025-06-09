@@ -8,6 +8,11 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<ProductVariant>
+ *
+ * @method ProductVariant|null find($id, $lockMode = null, $lockVersion = null)
+ * @method ProductVariant|null findOneBy(array $criteria, array $orderBy = null)
+ * @method ProductVariant[]    findAll()
+ * @method ProductVariant[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class ProductVariantRepository extends ServiceEntityRepository
 {
@@ -16,28 +21,20 @@ class ProductVariantRepository extends ServiceEntityRepository
         parent::__construct($registry, ProductVariant::class);
     }
 
-    //    /**
-    //     * @return ProductVariant[] Returns an array of ProductVariant objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ProductVariant
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Recherche une variante de produit par référence produit et taille.
+     */
+    public function findOneByReferenceAndSize(string $reference, string $size): ?ProductVariant
+    {
+        return $this->createQueryBuilder('v')
+            ->join('v.product', 'p')
+            ->where('p.reference = :ref')
+            ->andWhere('v.size = :size')
+            ->setParameters([
+                'ref' => $reference,
+                'size' => $size
+            ])
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }

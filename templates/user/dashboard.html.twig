@@ -1,8 +1,42 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Tableau de bord vendeuse{% endblock %}
+{% block title %}Accueil Vendeuse{% endblock %}
 
 {% block body %}
-    <h1>Bienvenue sur votre espace vendeuse</h1>
-    <p>Vous êtes connectée avec le rôle ROLE_USER.</p>
+    <div class="container mt-4">
+        <h2 class="mb-4">Bonjour {{ app.user.username }} – {{ location.name }}</h2>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="{{ path('user_sell') }}" class="text-decoration-none">
+                    <div class="card p-4 text-center shadow-sm h-100">
+                        <h5>🛒 Effectuer une vente</h5>
+                        <p class="text-muted">Scanner ou saisir un produit pour le retirer du stock</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ path('user_check_stock') }}" class="text-decoration-none">
+                    <div class="card p-4 text-center shadow-sm h-100">
+                        <h5>📊 Vérifier disponibilité</h5>
+                        <p class="text-muted">Consulter les autres magasins</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ path('user_add_stock') }}" class="text-decoration-none">
+                    <div class="card p-4 text-center shadow-sm h-100">
+                        <h5>📥 Ajouter un produit</h5>
+                        <p class="text-muted">Ajouter un article au stock</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-4 text-end">
+            <a href="{{ path('user_select_location') }}" class="btn btn-link text-muted" style="font-size: 0.8rem;">
+                Changer de magasin
+            </a>
+        </div>
+    </div>
 {% endblock %}

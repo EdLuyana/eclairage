@@ -14,10 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserSelectLocationController extends AbstractController
 {
 #[Route('/select-location', name: 'user_select_location')]
-public function selectLocation(
-Request $request,
-EntityManagerInterface $em
-): Response {
+public function selectLocation(Request $request, EntityManagerInterface $em): Response
+{
 $this->denyAccessUnlessGranted('ROLE_USER');
 
 $form = $this->createForm(SelectLocationForm::class);

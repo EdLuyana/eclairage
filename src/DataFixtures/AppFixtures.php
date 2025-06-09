@@ -6,6 +6,7 @@ use App\Entity\Brand;
 use App\Entity\Category;
 use App\Entity\Location;
 use App\Entity\Product;
+use App\Entity\ProductVariant;
 use App\Entity\Stock;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -14,87 +15,98 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-public function __construct(private UserPasswordHasherInterface $passwordHasher) {}
+    public function __construct(private UserPasswordHasherInterface $passwordHasher) {}
 
-public function load(ObjectManager $manager): void
-{
-// Catégories
-$cat1 = new Category();
-$cat1->setName('Ampoules');
-$manager->persist($cat1);
+    public function load(ObjectManager $manager): void
+    {
+        // Catégories
+        $cat1 = (new Category())->setName('Ampoules');
+        $cat2 = (new Category())->setName('Lampes');
+        $manager->persist($cat1);
+        $manager->persist($cat2);
 
-$cat2 = new Category();
-$cat2->setName('Lampes');
-$manager->persist($cat2);
+        // Marques
+        $brand1 = (new Brand())->setName('Philips');
+        $brand2 = (new Brand())->setName('Osram');
+        $manager->persist($brand1);
+        $manager->persist($brand2);
 
-// Marques
-$brand1 = new Brand();
-$brand1->setName('Philips');
-$manager->persist($brand1);
+        // Magasins
+        $mag1 = (new Location())->setName('Magasin Paris');
+        $mag2 = (new Location())->setName('Magasin Lyon');
+        $manager->persist($mag1);
+        $manager->persist($mag2);
 
-$brand2 = new Brand();
-$brand2->setName('Osram');
-$manager->persist($brand2);
+        // Produits
+        $prod1 = (new Product())
+            ->setName('Ampoule LED 60W')
+            ->setBrand($brand1)
+            ->setCategory($cat1)
+            ->setColor('Blanc')
+            ->setPrice(29)
+            ->setReference('prod1')
+            ->setCreatedAt(new \DateTimeImmutable());
+        $manager->persist($prod1);
 
-// Location
-$mag1 = new Location();
-$mag1->setName('Magasin Paris');
-$manager->persist($mag1);
+        $prod2 = (new Product())
+            ->setName('Lampe de bureau')
+            ->setBrand($brand2)
+            ->setCategory($cat2)
+            ->setColor('Noir')
+            ->setPrice(49)
+            ->setReference('prod2')
+            ->setCreatedAt(new \DateTimeImmutable());
+        $manager->persist($prod2);
 
-$mag2 = new Location();
-$mag2->setName('Magasin Lyon');
-$manager->persist($mag2);
+        // Variantes
+        $variant1_s = (new ProductVariant())->setProduct($prod1)->setSize('S');
+        $variant1_m = (new ProductVariant())->setProduct($prod1)->setSize('M');
+        $manager->persist($variant1_s);
+        $manager->persist($variant1_m);
 
-// Produits
-$prod1 = new Product();
-$prod1->setName('Ampoule LED 60W');
-$prod1->setBrand($brand1);
-$prod1->setCategory($cat1);
-$prod1->setColor('Blanc');
-$prod1->setPrice(29);
-$prod1->setReference('prod1');
-$prod1->setCreatedAt(new \DateTimeImmutable()); // ✅ Ajouté
-$manager->persist($prod1);
+        $variant2_s = (new ProductVariant())->setProduct($prod2)->setSize('S');
+        $variant2_m = (new ProductVariant())->setProduct($prod2)->setSize('M');
+        $manager->persist($variant2_s);
+        $manager->persist($variant2_m);
 
-$prod2 = new Product();
-$prod2->setName('Lampe de bureau');
-$prod2->setBrand($brand2);
-$prod2->setCategory($cat2);
-$prod2->setColor('Noir');
-$prod2->setPrice(49);
-$prod2->setReference('prod2');
-$prod2->setCreatedAt(new \DateTimeImmutable()); // ✅ Ajouté
-$manager->persist($prod2);
+        // Stock pour variantes
+        $stock1 = (new Stock())
+            ->setVariant($variant1_s)
+            ->setLocation($mag1)
+            ->setQuantity(20);
+        $manager->persist($stock1);
 
-// Utilisateurs
-$admin = new User();
-$admin->setUsername('admin');
-$admin->setRoles(['ROLE_ADMIN']);
-$admin->setPassword($this->passwordHasher->hashPassword($admin, 'adminpass'));
-$manager->persist($admin);
+        $stock2 = (new Stock())
+            ->setVariant($variant1_m)
+            ->setLocation($mag1)
+            ->setQuantity(5);
+        $manager->persist($stock2);
 
-$vendeuse = new User();
-$vendeuse->setUsername('vendeuse');
-$vendeuse->setRoles(['ROLE_USER']);
-$vendeuse->setPassword($this->passwordHasher->hashPassword($vendeuse, 'userpass'));
-$manager->persist($vendeuse);
+        $stock3 = (new Stock())
+            ->setVariant($variant2_s)
+            ->setLocation($mag2)
+            ->setQuantity(0);
+        $manager->persist($stock3);
 
-// Stock initial
-$stock1 = new Stock();
-$stock1->setProduct($prod1);
-$stock1->setLocation($mag1);
-$stock1->setQuantity(20);
-$stock1->setUpdatedAt(new \DateTimeImmutable());
-$manager->persist($stock1);
+        $stock4 = (new Stock())
+            ->setVariant($variant2_m)
+            ->setLocation($mag2)
+            ->setQuantity(3);
+        $manager->persist($stock4);
 
-$stock2 = new Stock();
-$stock2->setProduct($prod2);
-$stock2->setLocation($mag2);
-$stock2->setQuantity(10);
-$stock2->setUpdatedAt(new \DateTimeImmutable());
-$manager->persist($stock2);
+        // Utilisateurs
+        $admin = new User();
+        $admin->setUsername('admin');
+        $admin->setRoles(['ROLE_ADMIN']);
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'adminpass'));
+        $manager->persist($admin);
 
+        $vendeuse = new User();
+        $vendeuse->setUsername('vendeuse');
+        $vendeuse->setRoles(['ROLE_USER']);
+        $vendeuse->setPassword($this->passwordHasher->hashPassword($vendeuse, 'userpass'));
+        $manager->persist($vendeuse);
 
-$manager->flush();
-}
+        $manager->flush();
+    }
 }
