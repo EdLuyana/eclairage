@@ -1,0 +1,25 @@
+
+    <div class="col-md-6">
+        <label for="reference" class="form-label">Référence produit</label>
+        <input type="text"
+               id="reference"
+               name="reference"
+               class="form-control"
+               required
+               data-sizes-url="{{ path('user_user_get_sizes') }}">
+    </div>
+    <div class="col-md-4">
+        <label for="size" class="form-label">Taille</label>
+        <select id="size" name="size" class="form-select" required>
+            <option value="">Sélectionnez une taille</option>
+        </select>
+    </div>
+
+    {% if show_button is not defined or show_button %}
+        <div class="col-md-2 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                Valider
+            </button>
+        </div>
+    {% endif %}
+

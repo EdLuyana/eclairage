@@ -58,14 +58,19 @@ class AppFixtures extends Fixture
             ->setCreatedAt(new \DateTimeImmutable());
         $manager->persist($prod2);
 
-        // Variantes
-        $variant1_s = (new ProductVariant())->setProduct($prod1)->setSize('S');
-        $variant1_m = (new ProductVariant())->setProduct($prod1)->setSize('M');
+        // Variantes (en liant bien les deux côtés de la relation)
+        $variant1_s = (new ProductVariant())->setSize('S');
+        $variant1_m = (new ProductVariant())->setSize('M');
+        $prod1->addVariant($variant1_s);
+        $prod1->addVariant($variant1_m);
+
+        $variant2_s = (new ProductVariant())->setSize('S');
+        $variant2_m = (new ProductVariant())->setSize('M');
+        $prod2->addVariant($variant2_s);
+        $prod2->addVariant($variant2_m);
+
         $manager->persist($variant1_s);
         $manager->persist($variant1_m);
-
-        $variant2_s = (new ProductVariant())->setProduct($prod2)->setSize('S');
-        $variant2_m = (new ProductVariant())->setProduct($prod2)->setSize('M');
         $manager->persist($variant2_s);
         $manager->persist($variant2_m);
 

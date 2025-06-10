@@ -1,30 +1,28 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vente de produit{% endblock %}
+{% block title %}Ajouter du stock{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <h2>Vente d’un produit – {{ location.name }}</h2>
+    <div class="container mt-4">
+        <h2>Ajouter du stock – {{ location.name }}</h2>
 
-        {% if app.flashes('success') %}
-            <div class="alert alert-success">{{ app.flashes('success')[0] }}</div>
-        {% endif %}
-        {% if app.flashes('error') %}
-            <div class="alert alert-danger">{{ app.flashes('error')[0] }}</div>
-        {% endif %}
-
-        <form method="post">
-            <div class="mb-3">
-                <label for="reference" class="form-label">Référence du produit</label>
-                <input type="text" name="reference" id="reference" class="form-control" required>
-            </div>
+        <form method="POST">
+            {{ include('user/stock/_form.html.twig', { show_button: false }) }}
 
             <div class="mb-3">
-                <label for="size" class="form-label">Taille</label>
-                <input type="text" name="size" id="size" class="form-control" required>
+                <label for="quantity" class="form-label">Quantité à ajouter</label>
+                <input type="number" id="quantity" name="quantity" class="form-control" required min="1">
             </div>
 
-            <button type="submit" class="btn btn-danger">Valider la vente</button>
+            <button type="submit" class="btn btn-success">Ajouter au stock</button>
         </form>
+
+        {% for message in app.flashes('error') %}
+            <div class="alert alert-danger mt-3">{{ message }}</div>
+        {% endfor %}
+
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success mt-3">{{ message }}</div>
+        {% endfor %}
     </div>
 {% endblock %}

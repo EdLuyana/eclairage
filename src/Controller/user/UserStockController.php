@@ -11,16 +11,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Repository\LocationRepository;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 #[Route('/user', name: 'user_')]
 class UserStockController extends AbstractController
 {
     #[Route('/sell', name: 'sell')]
-    public function sell(Request $request, UserContextService $userContext, ProductVariantRepository $variantRepo, EntityManagerInterface $em): Response
+    public function sell(Request $request, SessionInterface $session, ProductVariantRepository $variantRepo, LocationRepository $locationRepository, EntityManagerInterface $em, UserContextService $userContext): Response
     {
-        try {
-            $location = $userContext->ensureCurrentLocation();
-        } catch (\RuntimeException) {
+        $locationId = $session->get('selected_location_id');
+
+        if (!$locationId) {
+            return $this->redirectToRoute('user_select_location');
+        }
+
+        $location = $locationRepository->find($locationId);
+
+        if (!$location) {
+            $session->remove('selected_location_id');
             return $this->redirectToRoute('user_select_location');
         }
 
@@ -28,6 +37,7 @@ class UserStockController extends AbstractController
             $reference = trim($request->request->get('reference'));
             $size = trim($request->request->get('size'));
 
+            // On récupère la variante correspondante
             $variant = $variantRepo->findOneByReferenceAndSize($reference, $size);
 
             if (!$variant) {
@@ -39,14 +49,15 @@ class UserStockController extends AbstractController
                 } elseif ($stock->getQuantity() <= 0) {
                     $this->addFlash('error', 'Stock insuffisant.');
                 } else {
-                    $stock->setQuantity($stock->getQuantity() - 1);
+                    $newQty = $stock->getQuantity() - 1;
+                    $stock->setQuantity($newQty);
                     $em->flush();
 
                     $this->addFlash('success', sprintf(
                         'Vente enregistrée. Stock restant pour %s (%s) : %d',
                         $variant->getProduct()->getName(),
                         $variant->getSize(),
-                        $stock->getQuantity()
+                        $newQty
                     ));
                 }
             }
@@ -58,28 +69,85 @@ class UserStockController extends AbstractController
     }
 
     #[Route('/check-stock', name: 'check_stock')]
-    public function checkStock(
-        UserContextService $userContext
-    ): Response {
+    public function checkStock(Request $request, UserContextService $userContext, ProductVariantRepository $variantRepo, LocationRepository $locationRepo): Response
+    {
+        // 1. Récupération du magasin courant
         try {
             $location = $userContext->ensureCurrentLocation();
         } catch (\RuntimeException) {
             return $this->redirectToRoute('user_select_location');
         }
 
+        $results = null; // pour le rendu
+
+        // 2. Traitement du formulaire
+        if ($request->isMethod('POST')) {
+            $reference = trim($request->request->get('reference'));
+            $size      = trim($request->request->get('size'));
+
+            $variant = $variantRepo->findOneByReferenceAndSize($reference, $size);
+
+            if (!$variant) {
+                $this->addFlash('error', 'Produit ou taille introuvable.');
+            } else {
+                // Préparer le tableau des stocks par magasin
+                $results = [];
+                $locations = $locationRepo->findAll();
+                foreach ($locations as $loc) {
+                    $stock = $variant->getStockFor($loc);
+                    $qty   = $stock ? $stock->getQuantity() : 0;
+                    $results[] = [
+                        'location' => $loc->getName(),
+                        'quantity' => $qty,
+                    ];
+                }
+            }
+        }
+
         return $this->render('user/stock/check_stock.html.twig', [
             'location' => $location,
+            'results'  => $results,
         ]);
     }
 
     #[Route('/add-stock', name: 'add_stock')]
-    public function addStock(
-        UserContextService $userContext
-    ): Response {
-        try {
-            $location = $userContext->ensureCurrentLocation();
-        } catch (\RuntimeException) {
-            return $this->redirectToRoute('user_select_location');
+    public function addStock(Request $request, UserContextService $userContext, ProductVariantRepository $variantRepo, EntityManagerInterface $em): Response
+    {
+        $location = $userContext->getCurrentLocation();
+
+        if ($request->isMethod('POST')) {
+            $reference = trim($request->request->get('reference'));
+            $size = trim($request->request->get('size'));
+            $quantity = (int) $request->request->get('quantity');
+
+            $variant = $variantRepo->findOneByReferenceAndSize($reference, $size);
+
+            if (!$variant) {
+                $this->addFlash('error', 'Produit ou taille introuvable.');
+            } elseif ($quantity <= 0) {
+                $this->addFlash('error', 'Quantité invalide.');
+            } else {
+                $stock = $variant->getStockFor($location);
+                if (!$stock) {
+                    $stock = new Stock();
+                    $stock->setVariant($variant);
+                    $stock->setLocation($location);
+                    $stock->setQuantity($quantity);
+                    $em->persist($stock);
+                } else {
+                    $stock->setQuantity($stock->getQuantity() + $quantity);
+                }
+
+                $em->flush();
+
+                $this->addFlash('success', sprintf(
+                    '%d unité(s) ajoutée(s) pour %s (%s). Stock total : %d',
+                    $quantity,
+                    $variant->getProduct()->getName(),
+                    $variant->getSize(),
+                    $stock->getQuantity()
+                ));
+            }
         }
 
         return $this->render('user/stock/add_stock.html.twig', [
@@ -106,5 +174,4 @@ class UserStockController extends AbstractController
 
         return new JsonResponse(['sizes' => $sizes]);
     }
-
 }

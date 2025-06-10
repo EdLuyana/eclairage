@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consulter stocks{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h2>Disponibilités – {{ location.name }}</h2>
+        <form method="post" class="row g-3">
+        {{ include('user/stock/_form.html.twig') }}
+        </form>
+        {% if results is not null %}
+            <div class="mt-4">
+                {% if results is empty %}
+                    <div class="alert alert-warning">
+                        Aucune disponibilité trouvée pour ce variant.
+                    </div>
+                {% else %}
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>Magasin</th>
+                            <th>Quantité</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in results %}
+                            {% set qty = row.quantity %}
+                            <tr>
+                                <td>{{ row.location }}</td>
+                                <td>
+                                    {% if qty == 0 %}
+                                        <span class="badge bg-danger">{{ qty }}</span>
+                                    {% elseif qty < 5 %}
+                                        <span class="badge bg-warning text-dark">{{ qty }}</span>
+                                    {% else %}
+                                        <span class="badge bg-success">{{ qty }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
