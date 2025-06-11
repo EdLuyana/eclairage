@@ -25,11 +25,6 @@ class ProductVariant
     #[ORM\OneToMany(mappedBy: 'variant', targetEntity: Stock::class, cascade: ['persist', 'remove'])]
     private Collection $stocks;
 
-    public function __construct()
-    {
-        $this->stocks = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
@@ -74,4 +69,40 @@ class ProductVariant
 
         return null;
     }
+
+    #[ORM\OneToMany(mappedBy: 'variant', targetEntity: StockMovement::class, orphanRemoval: true)]
+    private Collection $stockMovements;
+
+    public function __construct()
+    {
+        $this->stockMovements = new ArrayCollection();
+        $this->stocks = new ArrayCollection();
+    }
+
+    public function getStockMovements(): Collection
+    {
+        return $this->stockMovements;
+    }
+
+    public function addStockMovement(StockMovement $stockMovement): static
+    {
+        if (!$this->stockMovements->contains($stockMovement)) {
+            $this->stockMovements[] = $stockMovement;
+            $stockMovement->setVariant($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStockMovement(StockMovement $stockMovement): static
+    {
+        if ($this->stockMovements->removeElement($stockMovement)) {
+            if ($stockMovement->getVariant() === $this) {
+                $stockMovement->setVariant(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

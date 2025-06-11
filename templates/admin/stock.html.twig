@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Consultation du stock{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1 class="mb-4">État du stock par magasin</h1>
+
+        <form method="get" class="mb-4">
+            <label for="location" class="form-label">Filtrer par magasin :</label>
+            <select name="location" id="location" class="form-select" onchange="this.form.submit()">
+                <option value="">Tous les magasins</option>
+                {% for loc in locations %}
+                    <option value="{{ loc.id }}" {% if selectedLocationId == loc.id %}selected{% endif %}>{{ loc.name }}</option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <table class="table table-bordered align-middle">
+            <thead class="table-light">
+            <tr>
+                <th>Référence</th>
+                <th>Magasin</th>
+                <th>Marque</th>
+                <th>Ventes (30j)</th>
+                <th>Tailles</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for product in productsData %}
+                {% set location = product.variants[0].stocks[0].location %}
+                <tr>
+                    <td>{{ product.reference }}</td>
+                    <td>{{ location.name }}</td>
+                    <td>{{ product.brand.name }}</td>
+                    <td>
+                        {% set totalSales = 0 %}
+                        {% for variant in product.variants %}
+                            {% for stock in variant.stocks %}
+                                {% set key = variant.id ~ '-' ~ stock.location.id %}
+                                {% set totalSales = totalSales + (salesIndex[key]|default(0)) %}
+                            {% endfor %}
+                        {% endfor %}
+                        {{ totalSales }}
+                    </td>
+                    <td>
+                        {% for variant in product.variants %}
+                            {% for stock in variant.stocks %}
+                                {% if not selectedLocationId or stock.location.id == selectedLocationId %}
+                                    {% set qty = stock.quantity %}
+                                    {% set color = 'secondary' %}
+                                    {% if qty == 0 %}
+                                        {% set color = 'danger' %}
+                                    {% elseif qty == 1 %}
+                                        {% set color = 'warning' %}
+                                    {% elseif qty > 1 %}
+                                        {% set color = 'success' %}
+                                    {% endif %}
+                                    <span class="badge bg-{{ color }} me-1">{{ variant.size }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

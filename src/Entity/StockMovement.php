@@ -135,4 +135,21 @@ class StockMovement
             $this->createdAt = new DateTimeImmutable();
         }
     }
+
+    #[ORM\ManyToOne(inversedBy: 'stockMovements')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ProductVariant $variant = null;
+
+    public function getVariant(): ?ProductVariant
+    {
+        return $this->variant;
+    }
+
+    public function setVariant(?ProductVariant $variant): static
+    {
+        $this->variant = $variant;
+        return $this;
+    }
+
+
 }
