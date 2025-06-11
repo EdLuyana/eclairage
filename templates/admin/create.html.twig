@@ -1,0 +1,50 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un élément{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h2>Ajouter un élément</h2>
+
+        <div class="mb-3">
+            <label for="entity-select" class="form-label">Choisir un type :</label>
+            <select id="entity-select" class="form-select">
+                <option value="">-- Sélectionner --</option>
+                <option value="product">Produit</option>
+                <option value="brand">Marque</option>
+                <option value="category">Catégorie</option>
+            </select>
+        </div>
+
+        <div id="form-container">
+            <!-- Le formulaire sera injecté ici -->
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const select = document.getElementById('entity-select');
+            const formContainer = document.getElementById('form-container');
+
+            select.addEventListener('change', function () {
+                const selected = this.value;
+                if (!selected) {
+                    formContainer.innerHTML = '';
+                    return;
+                }
+
+                fetch(`/admin/load-form/${selected}`)
+                    .then(response => response.text())
+                    .then(html => {
+                        formContainer.innerHTML = html;
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors du chargement du formulaire :', error);
+                    });
+            });
+        });
+    </script>
+{% endblock %}

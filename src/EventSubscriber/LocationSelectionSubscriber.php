@@ -33,12 +33,17 @@ class LocationSelectionSubscriber implements EventSubscriberInterface
 
         $user = $this->security->getUser();
 
-        if ($user && in_array('ROLE_USER', $user->getRoles(), true)) {
-            $session = $request->getSession();
+        if ($user) {
+            $roles = $user->getRoles();
 
-            if (!$session->has('selected_location_id')) {
-                $url = $this->router->generate('user_select_location');
-                $event->setResponse(new RedirectResponse($url));
+            // Appliquer la redirection seulement aux utilisateurs ROLE_USER non admins
+            if (in_array('ROLE_USER', $roles, true) && !in_array('ROLE_ADMIN', $roles, true)) {
+                $session = $request->getSession();
+
+                if (!$session->has('selected_location_id')) {
+                    $url = $this->router->generate('user_select_location');
+                    $event->setResponse(new RedirectResponse($url));
+                }
             }
         }
     }

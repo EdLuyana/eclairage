@@ -1,8 +1,79 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Espace Admin{% endblock %}
+{% block title %}Dashboard administrateur{% endblock %}
 
 {% block body %}
-    <h1>Panneau d’administration</h1>
-    <p>Bienvenue, {{ app.user.username }}. Voici les outils d’administration.</p>
+    <div class="container mt-4">
+        <h1 class="mb-4">Bienvenue sur l’espace administrateur</h1>
+
+        <div class="row g-4">
+
+            <!-- Bloc Ajouts rapides -->
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body">
+                        <h5 class="card-title">➕ Ajouts rapides</h5>
+                        <p class="card-text">Ajouter un produit, une marque ou une catégorie.</p>
+                        <a href="{{ path('admin_create') }}" class="btn btn-primary">Ajouter un élément</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloc Consultation du stock -->
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📦 Stock</h5>
+                        <p class="card-text">Consulter les produits manquants ou en faible quantité par magasin.</p>
+                        <a href="{{ path('admin_stock_overview') }}" class="btn btn-outline-primary">Consulter le stock</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloc Journal des ventes -->
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body">
+                        <h5 class="card-title">📈 Journal des ventes</h5>
+                        <p class="card-text">Voir les ventes globales ou par magasin, avec filtres intelligents.</p>
+                        <a href="{{ path('admin_sales_journal') }}" class="btn btn-outline-primary">Voir les ventes</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloc Gestion des vendeuses -->
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🧑‍💼 Gestion des vendeuses</h5>
+                        <p class="card-text">Créer ou archiver les comptes des vendeuses.</p>
+                        <a href="{{ path('admin_manage_users') }}" class="btn btn-outline-primary">Gérer les comptes</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloc Étiquettes -->
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body">
+                        <h5 class="card-title">🧾 Génération d’étiquettes</h5>
+                        <p class="card-text">Générer des étiquettes produit avec référence et code-barres.</p>
+                        <a href="{{ path('admin_generate_labels') }}" class="btn btn-outline-primary">Générer</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bloc Importation CSV -->
+            <div class="col-md-6">
+                <div class="card shadow-sm rounded-4">
+                    <div class="card-body">
+                        <h5 class="card-title">⬆️ Importation CSV</h5>
+                        <p class="card-text">Importer un grand nombre de produits depuis un fichier.</p>
+                        <a href="{{ path('admin_import_csv') }}" class="btn btn-outline-primary">Importer</a>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
 {% endblock %}

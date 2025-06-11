@@ -6,14 +6,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-#[Route('/admin')]
+#[Route('/admin', name: 'admin_')]
 class AdminDashboardController extends AbstractController
 {
-    #[Route('/dashboard', name: 'admin_dashboard')]
-    public function dashboard(): Response
+    #[Route('/dashboard', name: 'dashboard')]
+    public function index(): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_ADMIN');
-
         return $this->render('admin/dashboard.html.twig');
     }
 }
