@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Location;
 use App\Entity\StockMovement;
 use App\Entity\Product;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Entity\User;
+use App\Form\UserCreateForm;
+use App\Form\UserPasswordEditForm;
 
 
 #[Route('/admin')]
@@ -87,10 +91,41 @@ class AdminController extends AbstractController
         return new Response('<h1>Journal des ventes (à implémenter)</h1>');
     }
 
-    #[Route('/users', name: 'admin_manage_users')]
-    public function users(): Response
-    {
-        return new Response('<h1>Gestion des vendeuses (à implémenter)</h1>');
+    #[Route('/admin/users', name: 'admin_manage_users')]
+    public function manageUsers(
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        $form = $this->createForm(UserCreateForm::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $username = $form->get('username')->getData();
+            $plainPassword = $form->get('plainPassword')->getData();
+
+            $user = new User();
+            $user->setUsername($username);
+            $user->setRoles(['ROLE_USER']);
+            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+            $user->setPassword($hashedPassword);
+            $user->setArchived(false);
+
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('success', 'Compte vendeuse créé avec succès.');
+            return $this->redirectToRoute('admin_manage_users');
+        }
+
+        $activeUsers = $em->getRepository(User::class)->findBy(['archived' => false]);
+        $archivedUsers = $em->getRepository(User::class)->findBy(['archived' => true]);
+
+        return $this->render('admin/users.html.twig', [
+            'form' => $form->createView(),
+            'activeUsers' => $activeUsers,
+            'archivedUsers' => $archivedUsers,
+        ]);
     }
 
     #[Route('/labels', name: 'admin_generate_labels')]
@@ -103,5 +138,49 @@ class AdminController extends AbstractController
     public function import(): Response
     {
         return new Response('<h1>Importation CSV (à implémenter)</h1>');
+    }
+
+    #[Route('/admin/user/{id}/archive', name: 'admin_user_archive')]
+    public function archiveUser(User $user, EntityManagerInterface $em): Response
+    {
+        $user->setArchived(true);
+        $em->flush();
+        $this->addFlash('success', 'Vendeuse archivée.');
+        return $this->redirectToRoute('admin_manage_users');
+    }
+
+    #[Route('/admin/user/{id}/reactivate', name: 'admin_user_reactivate')]
+    public function reactivateUser(User $user, EntityManagerInterface $em): Response
+    {
+        $user->setArchived(false);
+        $em->flush();
+        $this->addFlash('success', 'Vendeuse réactivée.');
+        return $this->redirectToRoute('admin_manage_users');
+    }
+
+    #[Route('/admin/user/{id}/edit-password', name: 'admin_user_edit_password')]
+    public function editPassword(
+        User $user,
+        Request $request,
+        EntityManagerInterface $em,
+        UserPasswordHasherInterface $passwordHasher
+    ): Response {
+        $form = $this->createForm(UserPasswordEditForm::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $newPassword = $form->get('plainPassword')->getData();
+            $hashed = $passwordHasher->hashPassword($user, $newPassword);
+            $user->setPassword($hashed);
+            $em->flush();
+
+            $this->addFlash('success', 'Mot de passe mis à jour.');
+            return $this->redirectToRoute('admin_manage_users');
+        }
+
+        return $this->render('admin/edit_password.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
     }
 }
